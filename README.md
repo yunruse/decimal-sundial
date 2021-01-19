@@ -1,2 +1,5 @@
 # decimal-sundial
- A decimal sundial app
+
+A decimal sundial class.
+
+Features macOS menubar app.
