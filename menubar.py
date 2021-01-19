@@ -18,9 +18,21 @@ class Statusbar(rumps.App):
         self.sun = Sun(*conf['coords'])
 
     def time(self):
-        p = self.conf['precision']
-        time = str(round(self.sun.sundial(), p)).zfill(p)
-        return time + ' sol'
+        fmt = self.conf.get('format', "%d sol")
+        p = self.conf.get('precision', 3)
+
+        h, m, s, ms = self.sun.as_clock()
+
+        for a, b in (
+            ('%d', str(round(self.sun.sundial(), p)).zfill(p)),
+            ('%H', str(int(h)).zfill(2)),
+            ('%M', str(int(m)).zfill(2)),
+            ('%S', str(int(s)).zfill(2)),
+            ('%.', str(round(ms, 3)).replace('0.', '')),
+            ('%%', '%'),
+        ):
+            fmt = fmt.replace(a, b)
+        return fmt
 
     @rumps.timer(0.01)
     def on_tick(self, sender):

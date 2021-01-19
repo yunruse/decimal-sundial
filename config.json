@@ -3,5 +3,6 @@
     55.7,
     -4.5
   ],
-  "precision": 3
+  "precision": 3,
+  "format": "%H:%M",
 }
