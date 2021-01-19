@@ -30,17 +30,29 @@ class Sun:
 
     def events(self, now=None):
         now = now or datetime.now()
-        twilights = [('now', now)]
-        
         def offset(date):
-            return date if date > now else date + DAY
+            if date < now:
+                date += DAY
+            return date
+
+        # todo: get events in the correct day rather than extrapolate
+        noon = self.sunrise + (self.sunset - self.sunrise) / 2
+        midnight = self.sunset + (self.sunrise + DAY - self.sunset) / 2
+        events = [
+            ('now', now),
+            ('sunrise', self.sunrise),
+            ('noon', noon),
+            ('sunset', self.sunset),
+            ('midnight', midnight)
+        ]
         
-        twilights += [
+        events += [
             (k, offset(date(d)))
             for k, d in self.data.items()
-            if 'twilight' in k]        
-        twilights.sort(key=lambda q: q[1])
-        return twilights
+            if 'twilight' in k]
+        events.sort(key=lambda q: q[1])
+        
+        return events
 
     def sundial(self, date=None, fix_night=False):
         '''
@@ -69,7 +81,10 @@ if __name__ == '__main__':
         conf = json.load(f)
     
     self = Sun(*conf['coords'])
+    day = DAY / (self.sunset - self.sunrise)
     for name, date in self.events():
         hhmm = date.strftime('%H:%M')
-        sol = f'{self.sundial(date):+.3f}'.replace('+', ' ')
-        print(f'{name:27} {sol} ({hhmm})')
+        sol = self.sundial(date)
+        if sol > day:
+            continue
+        print(f'{name:27} {sol:+.3f} ({hhmm})'.replace('+', ' '))
