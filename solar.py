@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import json
 
 import requests
 
@@ -62,3 +63,13 @@ class Sun:
         m, s = divmod(m * 60, 60)
         s, ms = divmod(s, 1)
         return h, m, s, ms
+
+if __name__ == '__main__':
+    with open('config.json') as f:
+        conf = json.load(f)
+    
+    self = Sun(*conf['coords'])
+    for name, date in self.events():
+        hhmm = date.strftime('%H:%M')
+        sol = f'{self.sundial(date):+.3f}'.replace('+', ' ')
+        print(f'{name:27} {sol} ({hhmm})')
