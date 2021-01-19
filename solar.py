@@ -26,18 +26,20 @@ class Sun:
         self.sunrise = date(data['sunrise'])
         self.sunset = date(data['sunset'])
 
-        day = timedelta(hours=24) / (self.sunset - self.sunrise)
-
-        now = datetime.now()
+    def events(self, now=None):
+        now = now or datetime.now()
         twilights = [('now', now)]
-        twilights += [(k, date(data[k])) for k in data if 'twilight' in k]        
+        
+        def offset(date):
+            return date if date > now else date + DAY
+        
+        twilights += [
+            (k, offset(date(d)))
+            for k, d in self.data.items()
+            if 'twilight' in k]        
         twilights.sort(key=lambda q: q[1])
+        return twilights
 
-        # TODO: add a "next:" menu bar entry and notif?
-        for k, v in twilights:
-            hhmm = v.strftime('%H:%M')
-            sol = f'{self.sundial(v):+.3f}'.replace('+', ' ')
-            print(f'{k:27} {sol} ({hhmm})')
 
     def sundial(self, date=None):
         # TODO: check and refresh every ~12 hours
