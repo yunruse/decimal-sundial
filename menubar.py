@@ -1,30 +1,52 @@
+__version__ = '0.1'
+
+import json
+import os
+
 import rumps
 
 from solar import Sun
 
-class Statusbar(rumps.App):    
-    def __init__(self, lat, lon):
-        self.sun = Sun(lat, lon)
-        self.precision = 4
+
+class Statusbar(rumps.App):
+    def __init__(self, conf):
+        self.load(conf)
         rumps.App.__init__(self, self.time())
-    
+
+    def load(self, conf):
+        self.sun = Sun(*conf['coords'])
+        self.precision = conf['precision']
+
     def time(self):
         p = self.precision
         time = str(round(self.sun.sundial(), p)).zfill(p)
-        return time + ' sol'    
-    
-    @rumps.clicked("3 digits")
-    def precision(self, sender):
-        sender.state = not sender.state
-        self.precision = 3 if sender.state else 2
+        return time + ' sol'
 
     @rumps.timer(0.01)
     def on_tick(self, sender):
         # add time to bottom of menu?
         self.title = self.time()
 
+    @rumps.clicked("Configure...")
+    def config(self, sender):
+        f = __file__.replace('menubar.py', 'config.json')
+        print(f)
+        os.system(f'open {f}')
+
+    @rumps.clicked("About...")
+    def config(self, sender):
+        if rumps.alert(
+            f'Decimal Sundial v{__version__}',
+            'Developed with love by Mia yun Ruse',
+            'Project on GitHub...', 'OK'
+        ):
+            import webbrowser
+            webbrowser.open_new_tab(
+                "https://github.com/yunruse/decimal-sundial")
+
+
 if __name__ == '__main__':
-    # TODO: config file for app support
-    LAT, LON = 55.7, -4.5
-    self = Statusbar(LAT, LON)
+    with open('config.json') as f:
+        conf = json.load(f)
+    self = Statusbar(conf)
     self.run()
