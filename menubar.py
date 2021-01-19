@@ -14,11 +14,11 @@ class Statusbar(rumps.App):
         rumps.App.__init__(self, self.time())
 
     def load(self, conf):
+        self.conf = conf
         self.sun = Sun(*conf['coords'])
-        self.precision = conf['precision']
 
     def time(self):
-        p = self.precision
+        p = self.conf['precision']
         time = str(round(self.sun.sundial(), p)).zfill(p)
         return time + ' sol'
 
