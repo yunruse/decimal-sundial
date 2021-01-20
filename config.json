@@ -5,4 +5,5 @@
   ],
   "precision": 3,
   "format": "%H:%M",
+  "event_notif": true
 }
