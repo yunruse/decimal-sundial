@@ -39,6 +39,10 @@ class Statusbar(rumps.App):
         # add time to bottom of menu?
         self.title = self.time()
 
+    @rumps.timer(60 * 60)
+    def refresh_data(self):
+        self.sun.refresh()
+
     @rumps.clicked("Configure...")
     def config(self, sender):
         f = __file__.replace('menubar.py', 'config.json')

@@ -61,7 +61,6 @@ class Sun:
         If fix_night, 2 is sunset. Otherwise, it's free to vary
         proportionally to the length of the day.
         '''
-        # TODO: check and refresh every ~12 hours
         date = date or datetime.now()
         solar_day = (self.sunset - self.sunrise)
         day = DAY / solar_day
