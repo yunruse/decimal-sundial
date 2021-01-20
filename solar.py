@@ -78,7 +78,7 @@ class Sun:
 
     def as_clock(self, date=None):
         t = self.sundial(date, True)
-        h = (t * 12) + 6
+        h = ((t * 12) + 6) % 24
         h, m = divmod(h * 60, 60)
         m, s = divmod(m * 60, 60)
         s, ms = divmod(s, 1)
