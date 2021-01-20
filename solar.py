@@ -61,14 +61,20 @@ class Sun:
         If fix_night, 2 is sunset. Otherwise, it's free to vary
         proportionally to the length of the day.
         '''
-        date = date or datetime.now()
-        solar_day = (self.sunset - self.sunrise)
-        day = DAY / solar_day
-        dial = (date - self.sunrise) / solar_day % day
         
-        if fix_night and dial > 1:
-            dial = 1 + (date - self.sunset) / (self.sunrise + DAY - self.sunset)
-        return dial
+        solar_day = (self.sunset - self.sunrise)
+        solar_night = (self.sunrise + DAY - self.sunset)
+        day = DAY / solar_day
+        date = date or datetime.now()
+        
+        dial = (date - self.sunrise) / solar_day
+        
+        if fix_night:
+            if date > self.sunset:
+                dial = 1 + (date - self.sunset) / solar_night
+            if date < self.sunrise:
+                dial = 2 - (self.sunrise - date) / solar_night
+        return dial % day
 
     def as_clock(self, date=None):
         t = self.sundial(date, True)
@@ -87,6 +93,8 @@ if __name__ == '__main__':
     for name, date in self.events():
         hhmm = date.strftime('%H:%M')
         sol = self.sundial(date)
+        if name == 'sunrise':
+            sol = day
         if sol > day:
             continue
         print(f'{name:27} {sol:+.3f} ({hhmm})'.replace('+', ' '))
