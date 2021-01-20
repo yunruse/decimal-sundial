@@ -1,15 +1,20 @@
 # sundial
 ## A remarkably witchy datetime formatter
 
-`sundial` is a datetime formatter, albeit with a twist. In addition to regular Pythonic strftime symbols like `%H:%M:%S`, it has its own for almost anything you'd want to record when it comes to time. In particular, if the current date was `2021-12-03 14:49`:
+`sundial` is a datetime formatter, albeit with a twist. In addition to regular Pythonic strftime symbols like `%H:%M:%S`, it lets you timekeep in your own way – by a sundial, or by decimal time (a la Revolutionary France).
 
-- `*d`: day-of-month with decimals, leading zero (`03.617`);
-- `*e`: day-of-month with decimals (`3.617`);
-- `*D`: _solar_ day-of-month with decimals (`03.338`) with leading zero;
-- `*E`: _solar_ day-of-month with decimals (`3.338`);
-- `*H`: _solar_ hour (`14`)
-- `*M`: _solar_ minute (`06`);
-- `*S`: _solar_ second (`45`);
+In particular, if the current date was `2021-12-03 14:49`, its solar time would be `14:06:45` and its decimal time `6:17:36`.
+
+- `*d`: day-of-month with decimals (`3.617`);
+- `*e`: _solar_ day-of-month with decimals (`3.338`);
+- `*h`: _solar_ hour (`14`)
+- `*m`: _solar_ minute (`6`);
+- `*s`: _solar_ second (`45`);
+- `*a`: decimal hour, 0 to 10 (`6`);
+- `*b`: decimal minute, 0 to 100 (`17`);
+- `*c`: decimal second, 0 to 100 (`36`);
+
+(In any of the above, using a capital letter adds relevant leading zeros. Trailing zeros are always included.)
 
 In the above, _solar_ time is defined like a sundial: 6AM is sunrise and 6PM is sunset. (The solar decimal is where 0 is sunrise and 0.5 is sunset.) At the moment, it is defined rigidly in a way where 6PM to 6AM will likely have significantly differing units, especially if you get much more or much less than exactly 12 hours of sunlight.
 

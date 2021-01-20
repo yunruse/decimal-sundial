@@ -88,28 +88,37 @@ class Sun:
         date = date or datetime.now()
         
         h, m, s, ms = self.as_clock(date)
-        sundial_float = self.sundial(date, False)
-        sundial = self.sundial(date, True)
+        sundial = self.sundial(date, True) / 2
         day_start = date.replace(hour=0, minute=0, second=0)
-
+        
         solar = date.day + sundial / 2
-        decimal = date.day + (date - day_start) / DAY
+        decimal = (date - day_start) / DAY
+        a = decimal * 10
+        a, b = divmod(a, 1)
+        b, c = divmod(b * 100, 1)
+        c *= 100
 
         string = date.strftime(string)
         # TODO: process symbols char-by-char
-        DAY_WITH_ZERO = f'06.3f'
-        DAY_NO_ZERO = f'.3f'
-        for sym, val, fmt in (
-            ('*d', decimal, DAY_WITH_ZERO),
-            ('*e', decimal, DAY_NO_ZERO),
-            ('*D', solar, DAY_WITH_ZERO),
-            ('*E', solar, DAY_NO_ZERO),
-            ('*H', h, '02d'),
-            ('*M', m, '02d'),
-            ('*S', s, '02d'),
-            ('*.', ms, '03d'),
+        CLOCK = ['1d', '02d']
+        CALDAY = [f'.3f', f'06.3f']
+        for sym, val, fmts in (
+            ('d', date.day + decimal, CALDAY),
+            ('e', date.day + sundial, CALDAY),
+            ('h', h, CLOCK),
+            ('m', m, CLOCK),
+            ('s', s, CLOCK),
+            ('a', a, ['1d', '1d']),
+            ('b', b, CLOCK),
+            ('c', c, CLOCK),
         ):
-            string = string.replace(sym, format(val, fmt))
+            for with_zero in (False, True):
+                if with_zero:
+                    sym = sym.upper()
+                fmt = fmts[with_zero]
+                if fmt.endswith('d'):
+                    val = int(val)
+                string = string.replace('*'+sym, format(val, fmt))
         return string
         
 def _show_events(sun):
@@ -124,7 +133,9 @@ def _show_events(sun):
         print(f'{name:27} {sol:+.3f} ({hhmm})'.replace('+', ' '))
 
 def test_time(sun, date):
-    for i in 'deDEHMS':
+    print(date)
+    letters = 'dehmsabc'
+    for i in letters:
         print(i, self.strftime('*'+i, date))
 
 if __name__ == '__main__':
