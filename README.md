@@ -21,4 +21,6 @@ Comes with macOS menubar app, which leverages `menubar.json` defined as:
       "menubar": fmtstring,  # format shown on menu
     }
 
+Due to a limitation in the menubar library, the menubar cannot update every second; it would skip over two seconds every now and then. As such, it updates at a more CPU-respecting rate of 30 seconds.
+
 ![A menubar app saying "1.508 sol".](/screenshot.png)

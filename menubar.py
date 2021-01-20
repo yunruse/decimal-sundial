@@ -35,7 +35,7 @@ class Statusbar(rumps.App):
         self.sun = Sun(*conf['coords'])
         self.last_event = None
 
-    @rumps.timer(4)
+    @rumps.timer(30)
     def on_tick(self, sender):
         # add time to bottom of menu?
         self.title = self.sun.strftime(self.conf.get('menubar'))
