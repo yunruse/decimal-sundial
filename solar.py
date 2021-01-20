@@ -63,7 +63,10 @@ class Sun:
         '''
         # TODO: check and refresh every ~12 hours
         date = date or datetime.now()
-        dial = (date - self.sunrise) / (self.sunset - self.sunrise)
+        solar_day = (self.sunset - self.sunrise)
+        day = DAY / solar_day
+        dial = (date - self.sunrise) / solar_day % day
+        
         if fix_night and dial > 1:
             dial = 1 + (date - self.sunset) / (self.sunrise + DAY - self.sunset)
         return dial
