@@ -34,20 +34,21 @@ class Statusbar(rumps.App):
         self.sun = Sun(*conf['coords'])
         self.last_event = None
 
-    def time(self, date=None):
+    def time(self, fmt=None, date=None):
         date = date or datetime.now()
-        fmt = self.conf.get('format', "%d sol")
+        fmt = fmt or "*d sol"
         p = self.conf.get('precision', 3)
 
         h, m, s, ms = self.sun.as_clock(date)
 
+        fmt = date.strftime(fmt)
         for a, b in (
-            ('%d', str(round(self.sun.sundial(), p)).zfill(p)),
-            ('%H', str(int(h)).zfill(2)),
-            ('%M', str(int(m)).zfill(2)),
-            ('%S', str(int(s)).zfill(2)),
-            ('%.', str(round(ms, 3)).replace('0.', '')),
-            ('%%', '%'),
+            ('*d', str(round(self.sun.sundial(), p)).zfill(p)),
+            ('*h', str(int(h)).zfill(2)),
+            ('*m', str(int(m)).zfill(2)),
+            ('*s', str(int(s)).zfill(2)),
+            ('*.', str(round(ms, 3)).replace('0.', '')),
+            ('**', '*'),
         ):
             fmt = fmt.replace(a, b)
         return fmt
@@ -55,7 +56,7 @@ class Statusbar(rumps.App):
     @rumps.timer(0.01)
     def on_tick(self, sender):
         # add time to bottom of menu?
-        self.title = self.time()
+        self.title = self.time(fmt=conf.get('menubar'))
 
     def next_event(self, index=1):
         name, date = self.sun.events()[index]

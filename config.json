@@ -4,6 +4,6 @@
     -4.5
   ],
   "precision": 3,
-  "format": "%H:%M",
+  "menubar": "*h:*m",
   "event_notif": true
 }
